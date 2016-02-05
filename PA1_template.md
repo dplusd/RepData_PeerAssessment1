@@ -92,7 +92,9 @@ axis(side = 1, at=((0:22) * 12.5) + 5,labels = hours, las=2)
 Blow is calculation and representation of most active daily time segment
 
 ```r
+#extract interval having max average daily step count
 maxStepTime <- names(average_daily_pattern)[average_daily_pattern == max(average_daily_pattern)]
+#format time
 maxStepTime <- paste(str_pad(as.integer(as.integer(maxStepTime) / 100), 2, pad='0'), str_pad(as.integer(as.integer(maxStepTime) %% 100), width=2, pad='0'), sep=':')
 maxStepTime
 ```
@@ -115,6 +117,7 @@ is_na
 ## [1] 2304
 ```
 
+Handling NAs:
 I would have replaced all missing values with the median step count for time segment
 
 Below code block creates a new data set that is equals to the original one but all NAs are replaced with the median number of steps per interval
