@@ -1,16 +1,12 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
 
 the below methods loads the CSV file from the activity zip file
 and trasforms the date fild into Date
-```{r echo=TRUE}
+
+```r
 readData <- function() {
     #source file name
     fileName <- "activity.zip"
@@ -32,7 +28,8 @@ readData <- function() {
 ```
 The function's return values will be sotred in a variable named "data"
 
-```{r echo=TRUE}
+
+```r
 data <- readData()
 ```
 
@@ -41,27 +38,44 @@ data <- readData()
 
 I've used tapply to calculate total daily steps
 
-```{r echo=TRUE}
+
+```r
 daily_totals <- tapply(data$steps, data$date, sum, na.rm=TRUE)
 ```
 
 
 
-```{r echo=TRUE}
+
+```r
 ##Below code block generates a histogram of daily step
 hist(daily_totals, xlab="Total Daily Steps", ylab="Frequency", main="Total number of steps taken each day")
 ```
 
-```{r echo=TRUE}
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)
+
+
+```r
 ##mean and median  daily steps were calculated from the daily_totals variable
 mean(daily_totals)
+```
+
+```
+## [1] 9354.23
+```
+
+```r
 median(daily_totals)
+```
+
+```
+## [1] 10395
 ```
 
 ## What is the average daily activity pattern?
 
 Below plot shows average daily step count by time segments
-```{r echo = TRUE}
+
+```r
 #will be used for string padding
 library(stringr)
 #calculate total number of steps per time segment divided by the unique number of days. this to overcome missing values
@@ -73,26 +87,39 @@ plot(average_daily_pattern, type="l", xaxt='n', xlab='', ylab='Average Step Coun
 #add x axis
 axis(side = 1, at=((0:22) * 12.5) + 5,labels = hours, las=2)
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)
 Blow is calculation and representation of most active daily time segment
-```{r echo = TRUE}
+
+```r
 maxStepTime <- names(average_daily_pattern)[average_daily_pattern == max(average_daily_pattern)]
 maxStepTime <- paste(str_pad(as.integer(as.integer(maxStepTime) / 100), 2, pad='0'), str_pad(as.integer(as.integer(maxStepTime) %% 100), width=2, pad='0'), sep=':')
 maxStepTime
+```
+
+```
+## [1] "08:35"
 ```
 
 
 ## Imputing missing values
 
 Total number of NAs in dataset
-```{r echo=TRUE}
+
+```r
 is_na = sum(is.na(data))
 is_na
+```
+
+```
+## [1] 2304
 ```
 
 I would have replaced all missing values with the median step count for time segment
 
 Below code block creates a new data set that is equals to the original one but all NAs are replaced with the median number of steps per interval
-```{r echo=TRUE}
+
+```r
 #Generate a dataframe holding the median number of steps per interval
 medValues <- as.data.frame(cbind(interval = unique(data$interval), steps = tapply(data$steps, data$interval, median, na.rm=T)))
 #generate new data set
@@ -105,18 +132,28 @@ dataNoNA<- rbind(
 ```
 
 Calculate the daily totals from the dataNoNA varaible and display an histogram
-```{r echo=TRUE}
+
+```r
 daily_totals_no_na <- tapply(dataNoNA$steps, dataNoNA$date, sum)
 ##Below code block generates a histogram of daily step
 hist(daily_totals_no_na, xlab="Total Daily Steps", ylab="Frequency", main="Total number of steps taken each day")
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-10-1.png)
 
-```{r echo=TRUE}
+
+
+```r
 ##Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment?
 mean_median <- data.frame(mean = c(mean(daily_totals_no_na), mean(daily_totals)), median = c(median(daily_totals_no_na), median(daily_totals)))
 rownames(mean_median) <- c('NA as median', 'Original Data')
 mean_median
+```
+
+```
+##                   mean median
+## NA as median  9503.869  10395
+## Original Data 9354.230  10395
 ```
 There is no real difference from the estimates in  the first part of assignemnt
 
@@ -126,7 +163,8 @@ The histogram shape has not changed. it seems like the frequencies went a litle 
 It seems like we could just ignore the NA observations.
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r echo=TRUE}
+
+```r
 #add a weekday / weekend column
 dataByWeekdayWeekEnd <- cbind(data, c("weekday", "weekend")[as.numeric(weekdays(data$date) %in% c("Sunday", "Saturday")) +
 1])
@@ -149,4 +187,6 @@ plot <- xyplot(steps ~ interval | factor(day), data=stepsByWeekdayDay,
        layout=(c(1,2)))
 print (plot) 
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-12-1.png)
 

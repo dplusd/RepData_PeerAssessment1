@@ -1,0 +1,18 @@
+{
+    "contents" : "library(xlsx)\nreadData <- function() {\n    #source file name\n    fileName <- \"activity.zip\"\n    #get path of temporary directory\n    tmpDir <- tempdir()\n    #extract CSV file name from Zip file\n    csvFileName <- unzip(fileName,list=TRUE)$Name[1]\n    #unzip csv file into temporary direct\n    unzip(fileName, file=csvFileName, exdir = tmpDir, overwrite = TRUE)\n    #get full path of CSV file\n    csvFullPath <- file.path(tmpDir, csvFileName)\n    #read CSV file\n    read.csv(csvFullPath)\n    #transform date column into Date\n    data$date <- as.Date(data$date)\n    #return value\n    data\n}\n\n\n\n\ndata <- readData()\nhist(tapply(data$steps, data$date, sum, na.rm=TRUE), xlab=\"Total Daily Steps\", ylab=\"Frequency\", main=\"Histogram of the total number of steps taken each day\")\n\n\nhead(data)\ntable(data$steps)\n\ndata[data$date == '2012-10-01', ]",
+    "created" : 1454364351922.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "776819187",
+    "id" : "49DF35D2",
+    "lastKnownWriteTime" : 31244048835477601,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "type" : "r_source"
+}
